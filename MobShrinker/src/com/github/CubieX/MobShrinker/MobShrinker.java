@@ -1,3 +1,14 @@
+/*
+ * MobShrinker - A CraftBukkit plugin to pack animals into spawner eggs
+ * Copyright (C) 2013  CubieX
+ * 
+ * This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 3 of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with this program; if not,
+ * see <http://www.gnu.org/licenses/>.
+ */
 package com.github.CubieX.MobShrinker;
 
 import java.util.ArrayList;
@@ -153,7 +164,7 @@ public class MobShrinker extends JavaPlugin
          ItemMeta im = null;
          String name = "";
          List<String> lore = null;
-         
+
          switch(livEnt.getType())
          {
          case HORSE:
@@ -166,7 +177,7 @@ public class MobShrinker extends JavaPlugin
             double currHealth = mount.getHealth();
             double jumpStrength = mount.getJumpStrength();            
             byte isSaddled = 1;        // byte to have shorter value in Lore (shorter than "true or false")
-            String armorType = "NONE";
+            int armorType = 0;         // 0 means, no armor. Otherwise this will be the ItemID.
             byte carriesChest = 0;     // byte to have shorter value in Lore (shorter than "true or false")
             customName = mount.getCustomName(); // may be null (must be set by using a NameTag)
 
@@ -184,7 +195,7 @@ public class MobShrinker extends JavaPlugin
 
             if(null != armor)
             {
-               armorType = mount.getInventory().getArmor().getType().name();
+               armorType = mount.getInventory().getArmor().getTypeId();
             }
 
             double speed = getHorseSpeed(mount);
@@ -192,10 +203,12 @@ public class MobShrinker extends JavaPlugin
             // create spawner egg which will spawn a cat with all necessary attributes
             spawnerEgg = new ItemStack(Material.MONSTER_EGG, 1, (short)mount.getType().getTypeId()); 
             im = spawnerEgg.getItemMeta();
-            name = variant.name() + "|" + color.name() + "|" + style.name();
+            name = variant.name();
             im.setDisplayName(name);
-            lore = new ArrayList<String>();            
+            lore = new ArrayList<String>();
 
+            lore.add(variant.name() + "|" + color.name() + "|" + style.name()); // only lore is save from modification by players (with anvil). Therefore save this also in lore.
+            
             lore.add(Math.ceil(maxHealth) + "|" + Math.ceil(currHealth) + "|" + String.valueOf((double)Math.round(speed * 100000) / 100000) + "|" +
                   String.valueOf((double)Math.round(jumpStrength * 100000) / 100000) + "|" + isSaddled + "|" + armorType + "|" + carriesChest);
 
@@ -211,26 +224,26 @@ public class MobShrinker extends JavaPlugin
             im.setLore(lore);
             spawnerEgg.setItemMeta(im);
 
-            if(MobShrinker.debug){player.sendMessage(variant.name() + " - " + color.name() + " - " + style.name() + " | MaxHP: " + Math.ceil(maxHealth) + " | currHP: " + Math.ceil(currHealth) +
+            if(MobShrinker.debug){player.sendMessage(name + " | MaxHP: " + Math.ceil(maxHealth) + " | currHP: " + Math.ceil(currHealth) +
                   " | Speed: " + String.valueOf((double)Math.round(speed * 100000) / 100000) + " | JumpStr: " +
                   String.valueOf((double)Math.round(jumpStrength * 100000) / 100000) + " | saddled: " + isSaddled + " | Armor: " + armorType + " | " + carriesChest + " | " + customName);}
-
             break;
          case WOLF:
             Wolf wolf = (Wolf)livEnt;
-            
+
             DyeColor collarColor = wolf.getCollarColor(); 
             customName = wolf.getCustomName(); // may be null (must be set by using a NameTag)
 
             // create spawner egg which will spawn a wolf with all necessary attributes
             spawnerEgg = new ItemStack(Material.MONSTER_EGG, 1, (short)wolf.getType().getTypeId()); 
             im = spawnerEgg.getItemMeta();
-            name = wolf.getType().getName();
+            name = "Wolf";
             im.setDisplayName(name);
             lore = new ArrayList<String>();            
 
+            lore.add(name); // only lore is save from modification by players (with anvil). Therefore save this also in lore.
             lore.add(collarColor.name());
-            
+
             if(null != customName) // mob has custom name (set with NameTag for example)
             {
                lore.add(customName);
@@ -247,27 +260,29 @@ public class MobShrinker extends JavaPlugin
             break;
          case OCELOT:
             Ocelot cat = (Ocelot)livEnt;
-            
-            Type type = cat.getCatType();            
+
+            Type type = cat.getCatType();
             customName = cat.getCustomName(); // may be null (must be set by using a NameTag)
 
             // create spawner egg which will spawn a cat with all necessary attributes
             spawnerEgg = new ItemStack(Material.MONSTER_EGG, 1, (short)cat.getType().getTypeId()); 
             im = spawnerEgg.getItemMeta();
-            name = type.name();
-            im.setDisplayName(name);                        
-           
+            name = "Cat";
+            im.setDisplayName(name);
+            lore = new ArrayList<String>();
+            
+            lore.add("Cat|" + type.name());  // only lore is save from modification by players (with anvil). Therefore save this also in lore.
+            
             if(null != customName) // mob has custom name (set with NameTag for example)
-            {
-               lore = new ArrayList<String>();
+            {               
                lore.add(customName);
-               im.setLore(lore);
             }
             else
             {
                customName = "";
             }
-                        
+            
+            im.setLore(lore);
             spawnerEgg.setItemMeta(im);
 
             if(MobShrinker.debug){player.sendMessage(type.name() + " - " + customName);}

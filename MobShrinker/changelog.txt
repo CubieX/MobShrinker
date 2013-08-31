@@ -1,5 +1,11 @@
 Changelog for MobShrinker by CubieX
 -----------------------------------
+V.0.2.0
+- shifted type, variant, style and color information to lore, to be unmodifiable by players when using the anvil
+  The DisplayName will only hold a copy of this information for convenience. 
+- changed armorType from full name to ItemID to shorten the displayed lore lines
+- fixed type checks for ocelots and wolfs
+
 V.0.1.1
 - added permission checks and isActive() switch check for all commands and events
 

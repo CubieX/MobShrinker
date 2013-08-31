@@ -2,7 +2,7 @@ name: MobShrinker
 main: com.github.CubieX.MobShrinker.MobShrinker
 author: CubieX
 softdepend: [PermissionsEx, zPermissions, bPermissions, PermissionsBukkit]
-version: 0.1.1
+version: 0.2.0
 description: Shrink mobs to spawner eggs
 
 commands:
