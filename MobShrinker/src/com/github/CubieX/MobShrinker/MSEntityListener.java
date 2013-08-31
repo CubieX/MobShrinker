@@ -108,145 +108,154 @@ public class MSEntityListener implements Listener
                         e.getPlayer().getItemInHand().getItemMeta().getDisplayName().startsWith("DONKEY") ||
                         e.getPlayer().getItemInHand().getItemMeta().getDisplayName().startsWith("MULE"))
                   {
-                     String[] raceAndLook = e.getPlayer().getItemInHand().getItemMeta().getDisplayName().split("\\|"); // escaping necessary, because | is a regex special char
-                     // Order: variant|color|style
-
-                     String[] attribs = e.getPlayer().getItemInHand().getItemMeta().getLore().get(0).split("\\|");
-                     // Order: maxHealth|currHealth|speed|jumpStrength|isSaddled|armorType|carriesChest
-
-                     String customName = null;
-
-                     if(e.getPlayer().getItemInHand().getItemMeta().getLore().size() == 2) // may have length = 1 if no custom name was set
+                     if(MobShrinker.isActive)
                      {
-                        customName = e.getPlayer().getItemInHand().getItemMeta().getLore().get(1);                        
+                        String[] raceAndLook = e.getPlayer().getItemInHand().getItemMeta().getDisplayName().split("\\|"); // escaping necessary, because | is a regex special char
+                        // Order: variant|color|style
+
+                        String[] attribs = e.getPlayer().getItemInHand().getItemMeta().getLore().get(0).split("\\|");
+                        // Order: maxHealth|currHealth|speed|jumpStrength|isSaddled|armorType|carriesChest
+
+                        String customName = null;
+
+                        if(e.getPlayer().getItemInHand().getItemMeta().getLore().size() == 2) // may have length = 1 if no custom name was set
+                        {
+                           customName = e.getPlayer().getItemInHand().getItemMeta().getLore().get(1);                        
+                        }
+
+                        // find place to spawn mount
+                        Horse mount = (Horse)e.getPlayer().getWorld().spawnEntity(e.getClickedBlock().getRelative(BlockFace.UP).getLocation(), EntityType.HORSE);
+                        // TODO check surroundings! And search suiting position nearby. Prevent spawning it in a wall!
+
+                        // set mounts attributes
+                        mount.setOwner(e.getPlayer()); // will tame the mount automaticly                     
+                        mount.setVariant(Variant.valueOf(raceAndLook[0]));
+                        mount.setColor(Color.valueOf(raceAndLook[1]));
+                        mount.setStyle(Style.valueOf(raceAndLook[2]));                     
+                        mount.setMaxHealth(Double.valueOf(attribs[0]));
+                        mount.setHealth(Double.valueOf(attribs[1]));
+                        setHorseSpeed(mount, Double.valueOf(attribs[2]));
+                        mount.setJumpStrength(Double.valueOf(attribs[3]));
+
+                        byte isSaddled = 1;
+                        byte carriesChest = 0;
+
+                        try
+                        {
+                           isSaddled = Byte.parseByte(attribs[4]);
+                           carriesChest = Byte.parseByte(attribs[6]);
+                        }
+                        catch(NumberFormatException ex)
+                        {
+                           MobShrinker.log.severe(MobShrinker.logPrefix + ex.getMessage()); // should never happen
+                        }
+
+                        if(1 == isSaddled)
+                        {
+                           mount.getInventory().setSaddle(new ItemStack(Material.SADDLE, 1));                        
+                        }
+
+                        if(!attribs[5].equals("NONE"))
+                        {
+                           mount.getInventory().setArmor(new ItemStack(Material.valueOf(attribs[5]), 1));                        
+                        }
+
+                        if(1 == carriesChest)
+                        {
+                           mount.setCarryingChest(true);
+                        }
+
+                        if(null != customName)
+                        {
+                           mount.setCustomName(customName);                        
+                        }
+                        else
+                        {
+                           customName = "";
+                        }
+
+                        if(MobShrinker.debug){e.getPlayer().sendMessage(raceAndLook[0] + " - " + raceAndLook[1] + " - " + raceAndLook[2] + " | MaxHP: " + attribs[0] + " | currHP: " + attribs[1] +
+                              " | Speed: " + attribs[2] + " | JumpStr: " +
+                              attribs[3] + " | saddled: " + attribs[4] + " | Armor: " + attribs[5] + " | " + attribs[6] + " | " + customName);}
+
+                        e.setCancelled(true); // cancel event to prevent spawning a creature out of the egg.
                      }
-
-                     // find place to spawn mount
-                     Horse mount = (Horse)e.getPlayer().getWorld().spawnEntity(e.getClickedBlock().getRelative(BlockFace.UP).getLocation(), EntityType.HORSE);
-                     // TODO check surroundings! And search suiting position nearby. Prevent spawning it in a wall!
-
-                     // set mounts attributes
-                     mount.setOwner(e.getPlayer()); // will tame the mount automaticly                     
-                     mount.setVariant(Variant.valueOf(raceAndLook[0]));
-                     mount.setColor(Color.valueOf(raceAndLook[1]));
-                     mount.setStyle(Style.valueOf(raceAndLook[2]));                     
-                     mount.setMaxHealth(Double.valueOf(attribs[0]));
-                     mount.setHealth(Double.valueOf(attribs[1]));
-                     setHorseSpeed(mount, Double.valueOf(attribs[2]));
-                     mount.setJumpStrength(Double.valueOf(attribs[3]));
-
-                     byte isSaddled = 1;
-                     byte carriesChest = 0;
-
-                     try
-                     {
-                        isSaddled = Byte.parseByte(attribs[4]);
-                        carriesChest = Byte.parseByte(attribs[6]);
-                     }
-                     catch(NumberFormatException ex)
-                     {
-                        MobShrinker.log.severe(MobShrinker.logPrefix + ex.getMessage()); // should never happen
-                     }
-
-                     if(1 == isSaddled)
-                     {
-                        mount.getInventory().setSaddle(new ItemStack(Material.SADDLE, 1));                        
-                     }
-
-                     if(!attribs[5].equals("NONE"))
-                     {
-                        mount.getInventory().setArmor(new ItemStack(Material.valueOf(attribs[5]), 1));                        
-                     }
-
-                     if(1 == carriesChest)
-                     {
-                        mount.setCarryingChest(true);
-                     }
-
-                     if(null != customName)
-                     {
-                        mount.setCustomName(customName);                        
-                     }
-                     else
-                     {
-                        customName = "";
-                     }
-
-                     if(MobShrinker.debug){e.getPlayer().sendMessage(raceAndLook[0] + " - " + raceAndLook[1] + " - " + raceAndLook[2] + " | MaxHP: " + attribs[0] + " | currHP: " + attribs[1] +
-                           " | Speed: " + attribs[2] + " | JumpStr: " +
-                           attribs[3] + " | saddled: " + attribs[4] + " | Armor: " + attribs[5] + " | " + attribs[6] + " | " + customName);}
-                     
-                     e.setCancelled(true); // cancel event to prevent spawning a creature out of the egg.
                   }
 
                   // RE-SPAWN A WOLF FROM SPECIAL SPAWNER EGG ===============================================
                   if(e.getPlayer().getItemInHand().getItemMeta().getDisplayName().startsWith("WOLF"))
                   {
-                     String collarColor = e.getPlayer().getItemInHand().getItemMeta().getLore().get(0);
-                     String customName = null;
-                                       
-                     if(e.getPlayer().getItemInHand().getItemMeta().getLore().size() == 2) // may have length = 1 if no custom name was set
+                     if(MobShrinker.isActive)
                      {
-                        customName = e.getPlayer().getItemInHand().getItemMeta().getLore().get(1);                        
-                     }
+                        String collarColor = e.getPlayer().getItemInHand().getItemMeta().getLore().get(0);
+                        String customName = null;
 
-                     // find place to spawn wolf
-                     Wolf wolf = (Wolf)e.getPlayer().getWorld().spawnEntity(e.getClickedBlock().getRelative(BlockFace.UP).getLocation(), EntityType.WOLF);
-                     // TODO check surroundings! And search suiting position nearby. Prevent spawning it in a wall!
+                        if(e.getPlayer().getItemInHand().getItemMeta().getLore().size() == 2) // may have length = 1 if no custom name was set
+                        {
+                           customName = e.getPlayer().getItemInHand().getItemMeta().getLore().get(1);                        
+                        }
 
-                     // set wolfs attributes
-                     wolf.setOwner(e.getPlayer()); // will tame the wolf automaticly                     
-                     
-                     if(null != customName)
-                     {
-                        wolf.setCustomName(customName);
-                     }
-                     else
-                     {
-                        customName = "";
-                     }
-                     
-                     if(MobShrinker.debug){e.getPlayer().sendMessage(wolf.getType().getName() + " - " + collarColor + " - " + customName);}
+                        // find place to spawn wolf
+                        Wolf wolf = (Wolf)e.getPlayer().getWorld().spawnEntity(e.getClickedBlock().getRelative(BlockFace.UP).getLocation(), EntityType.WOLF);
+                        // TODO check surroundings! And search suiting position nearby. Prevent spawning it in a wall!
 
-                     e.setCancelled(true); // cancel event to prevent spawning a creature out of the egg.
+                        // set wolfs attributes
+                        wolf.setOwner(e.getPlayer()); // will tame the wolf automaticly                     
+
+                        if(null != customName)
+                        {
+                           wolf.setCustomName(customName);
+                        }
+                        else
+                        {
+                           customName = "";
+                        }
+
+                        if(MobShrinker.debug){e.getPlayer().sendMessage(wolf.getType().getName() + " - " + collarColor + " - " + customName);}
+
+                        e.setCancelled(true); // cancel event to prevent spawning a creature out of the egg.
+                     }
                   }
 
                   // RE-SPAWN A CAT FROM SPECIAL SPAWNER EGG ===============================================
                   if(e.getPlayer().getItemInHand().getItemMeta().getDisplayName().startsWith("CAT"))
                   {
-                     String type = e.getPlayer().getItemInHand().getItemMeta().getDisplayName(); // escaping necessary, because | is a regex special char                     
-                     String customName = null;
-                     
-                     if(e.getPlayer().getItemInHand().getItemMeta().hasLore())
+                     if(MobShrinker.isActive)
                      {
-                        customName = e.getPlayer().getItemInHand().getItemMeta().getLore().get(0);                        
-                     }
+                        String type = e.getPlayer().getItemInHand().getItemMeta().getDisplayName(); // escaping necessary, because | is a regex special char                     
+                        String customName = null;
 
-                     // find place to spawn cat
-                     Ocelot cat = (Ocelot)e.getPlayer().getWorld().spawnEntity(e.getClickedBlock().getRelative(BlockFace.UP).getLocation(), EntityType.OCELOT);
-                     // TODO check surroundings! And search suiting position nearby. Prevent spawning it in a wall!
-
-                     // set cats attributes                     
-                     cat.setCatType(Type.valueOf(type));
-                     cat.setOwner(e.getPlayer()); // will tame the cat automaticly
-                     
-                     if(null != customName)
-                     {
-                        if(!e.getPlayer().getItemInHand().getItemMeta().getLore().isEmpty())
+                        if(e.getPlayer().getItemInHand().getItemMeta().hasLore())
                         {
-                           cat.setCustomName(customName);
+                           customName = e.getPlayer().getItemInHand().getItemMeta().getLore().get(0);                        
                         }
-                     }
-                     else
-                     {
-                        customName = "";
-                     }
-                     
-                     if(MobShrinker.debug){e.getPlayer().sendMessage(cat.getType().getName() + " - " + customName);}
 
-                     e.setCancelled(true); // cancel event to prevent spawning a creature out of the egg.
+                        // find place to spawn cat
+                        Ocelot cat = (Ocelot)e.getPlayer().getWorld().spawnEntity(e.getClickedBlock().getRelative(BlockFace.UP).getLocation(), EntityType.OCELOT);
+                        // TODO check surroundings! And search suiting position nearby. Prevent spawning it in a wall!
+
+                        // set cats attributes                     
+                        cat.setCatType(Type.valueOf(type));
+                        cat.setOwner(e.getPlayer()); // will tame the cat automaticly
+
+                        if(null != customName)
+                        {
+                           if(!e.getPlayer().getItemInHand().getItemMeta().getLore().isEmpty())
+                           {
+                              cat.setCustomName(customName);
+                           }
+                        }
+                        else
+                        {
+                           customName = "";
+                        }
+
+                        if(MobShrinker.debug){e.getPlayer().sendMessage(cat.getType().getName() + " - " + customName);}
+
+                        e.setCancelled(true); // cancel event to prevent spawning a creature out of the egg.
+                     }
                   }
-               }
+               }               
             }
          }         
       }

@@ -1,5 +1,8 @@
 Changelog for MobShrinker by CubieX
 -----------------------------------
+V.0.1.1
+- added permission checks and isActive() switch check for all commands and events
+
 V.0.1.0
 - first Beta
 - build against CB 1.6.2-R0.1

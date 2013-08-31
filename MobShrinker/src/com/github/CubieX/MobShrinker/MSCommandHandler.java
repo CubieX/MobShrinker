@@ -56,41 +56,58 @@ public class MSCommandHandler implements CommandExecutor
 
             if (args[0].equalsIgnoreCase("activate"))
             {
-               if(!MobShrinker.isActive)
+               if(sender.isOp() || sender.hasPermission("mobshrinker.admin"))
                {
-                  MobShrinker.isActive = true;
-                  sender.sendMessage(MobShrinker.logPrefix + " ist jetzt " + ChatColor.GREEN + " AKTIVIERT!");
+                  if(!MobShrinker.isActive)
+                  {
+                     MobShrinker.isActive = true;
+                     sender.sendMessage(MobShrinker.logPrefix + " ist jetzt " + ChatColor.GREEN + " AKTIVIERT!");
+                  }
+                  else
+                  {
+                     sender.sendMessage(MobShrinker.logPrefix + " ist bereits aktiviert.");
+                  }
                }
                else
                {
-                  sender.sendMessage(MobShrinker.logPrefix + " ist bereits aktiviert.");
-               }               
+                  sender.sendMessage(ChatColor.RED + "Du hast keine Berechtigung um " + MobShrinker.logPrefix + "zu aktivieren!");
+               }
                return true;
             }
 
             if (args[0].equalsIgnoreCase("deactivate"))
             {
-               if(MobShrinker.isActive)
+               if(sender.isOp() || sender.hasPermission("mobshrinker.admin"))
                {
-                  MobShrinker.isActive = false;
-                  sender.sendMessage(MobShrinker.logPrefix + " ist jetzt " + ChatColor.RED + " DEAKTIVIERT!");
+                  if(MobShrinker.isActive)
+                  {
+                     MobShrinker.isActive = false;
+                     sender.sendMessage(MobShrinker.logPrefix + " ist jetzt " + ChatColor.RED + " DEAKTIVIERT!");
+                  }
+                  else
+                  {
+                     sender.sendMessage(MobShrinker.logPrefix + " ist bereits deaktiviert.");
+                  }
                }
                else
                {
-                  sender.sendMessage(MobShrinker.logPrefix + " ist bereits deaktiviert.");
+                  sender.sendMessage(ChatColor.RED + "Du hast keine Berechtigung um " + MobShrinker.logPrefix + "zu deaktivieren!");
                }
                return true;
-            }
+            }        
 
             if (args[0].equalsIgnoreCase("status"))
             {
-               if(MobShrinker.isActive)
+               if(sender.isOp() || sender.hasPermission("mobshrinker.use"))
                {
-                  sender.sendMessage(MobShrinker.logPrefix + " ist momentan " + ChatColor.GREEN + " AKTIVIERT.");
-               }
-               else
-               {
-                  sender.sendMessage(MobShrinker.logPrefix + " ist momentan " + ChatColor.RED + " DEAKTIVIERT.");
+                  if(MobShrinker.isActive)
+                  {
+                     sender.sendMessage(MobShrinker.logPrefix + " ist momentan " + ChatColor.GREEN + " AKTIVIERT.");
+                  }
+                  else
+                  {
+                     sender.sendMessage(MobShrinker.logPrefix + " ist momentan " + ChatColor.RED + " DEAKTIVIERT.");
+                  }
                }
 
                return true;
@@ -100,12 +117,12 @@ public class MSCommandHandler implements CommandExecutor
             if(!MobShrinker.isActive)
             {
                sender.sendMessage(MobShrinker.logPrefix + " ist momentan " + ChatColor.RED + " DEAKTIVIERT.");
-               return true;
+               return true;            
             }
             // ##################################################################################
-            
+
             // add commands here (will not be executed if !isActive())
-            
+
          }
          else
          {
