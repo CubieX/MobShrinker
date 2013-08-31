@@ -1,5 +1,8 @@
 Changelog for MobShrinker by CubieX
 -----------------------------------
+V.0.2.1
+- fixed spawning from eggs for normal animals without special attributes
+
 V.0.2.0
 - shifted type, variant, style and color information to lore, to be unmodifiable by players when using the anvil
   The DisplayName will only hold a copy of this information for convenience. 

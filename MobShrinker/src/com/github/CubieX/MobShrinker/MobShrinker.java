@@ -208,7 +208,7 @@ public class MobShrinker extends JavaPlugin
             lore = new ArrayList<String>();
 
             lore.add(variant.name() + "|" + color.name() + "|" + style.name()); // only lore is save from modification by players (with anvil). Therefore save this also in lore.
-            
+
             lore.add(Math.ceil(maxHealth) + "|" + Math.ceil(currHealth) + "|" + String.valueOf((double)Math.round(speed * 100000) / 100000) + "|" +
                   String.valueOf((double)Math.round(jumpStrength * 100000) / 100000) + "|" + isSaddled + "|" + armorType + "|" + carriesChest);
 
@@ -270,9 +270,9 @@ public class MobShrinker extends JavaPlugin
             name = "Cat";
             im.setDisplayName(name);
             lore = new ArrayList<String>();
-            
+
             lore.add("Cat|" + type.name());  // only lore is save from modification by players (with anvil). Therefore save this also in lore.
-            
+
             if(null != customName) // mob has custom name (set with NameTag for example)
             {               
                lore.add(customName);
@@ -281,14 +281,14 @@ public class MobShrinker extends JavaPlugin
             {
                customName = "";
             }
-            
+
             im.setLore(lore);
             spawnerEgg.setItemMeta(im);
 
             if(MobShrinker.debug){player.sendMessage(type.name() + " - " + customName);}
             break;
          default:
-            // nothing to do
+            spawnerEgg = new ItemStack(Material.MONSTER_EGG, 1, (short)livEnt.getType().getTypeId()); // pack animal into egg without storing special attributes
          }
       }
 
