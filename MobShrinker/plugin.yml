@@ -1,0 +1,21 @@
+name: MobShrinker
+main: com.github.CubieX.MobShrinker.MobShrinker
+author: CubieX
+softdepend: [PermissionsEx, zPermissions, bPermissions, PermissionsBukkit]
+version: 0.1.0
+description: Shrink mobs to spawner eggs
+
+commands:
+    ms:
+      description: Using MobShrinker
+      usage: /ms version | reload | activate | deactivate | status | shrink
+
+permissions:
+    mobshrinker.use:
+        description: Use MobShrinkers basic functionality
+        default: op
+    mobshrinker.admin:
+        description: Allows use of all commands and effects
+        default: op
+        children:
+          sockettest.use: true

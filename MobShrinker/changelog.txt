@@ -1,0 +1,10 @@
+Changelog for MobShrinker by CubieX
+-----------------------------------
+V.0.1.0
+- first Beta
+- build against CB 1.6.2-R0.1
+- fully implemented packing (allowed) animals into special spawner eggs
+- fully implemented re-spawning auf animals from special eggs
+
+V.0.0.1
+- Initial Alpha version
