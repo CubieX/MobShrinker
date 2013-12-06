@@ -49,6 +49,8 @@ public class MobShrinker extends JavaPlugin
 
    // config values
    static boolean debug = false;
+   static String item = "DIAMOND";
+   static int amount = 1;
 
    //*************************************************
    static String usedConfigVersion = "1"; // Update this every time the config file version changes, so the plugin knows, if there is a suiting config present
@@ -78,7 +80,7 @@ public class MobShrinker extends JavaPlugin
 
       populateAllowedEntitesList();
 
-      log.info(this.getDescription().getName() + " version " + getDescription().getVersion() + " is enabled!");
+      log.info(logPrefix + " version " + getDescription().getVersion() + " is enabled!");
 
       //schedHandler.startPlayerInWaterCheckScheduler_SynchRepeating();
    }
@@ -106,6 +108,15 @@ public class MobShrinker extends JavaPlugin
       boolean invalid = false;
 
       if(getConfig().contains("debug")){debug = getConfig().getBoolean("debug");}else{invalid = true;}
+      if((getConfig().contains("item")) && (null != Material.getMaterial(item))){item = getConfig().getString("item");}else{invalid = true;}
+      if(getConfig().contains("amount"))
+      {
+         amount = getConfig().getInt("amount"); if(amount <= 0){amount = 1; exceed = true;} if(amount > 64){amount = 64; exceed = true;}
+      }
+      else
+      {
+         invalid = true;
+      }      
 
       if(exceed)
       {

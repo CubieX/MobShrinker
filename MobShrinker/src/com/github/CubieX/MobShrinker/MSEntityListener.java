@@ -45,47 +45,54 @@ public class MSEntityListener implements Listener
    {      
       if(null != e.getPlayer().getItemInHand())
       {
-         if(e.getPlayer().getItemInHand().getType() == Material.DIAMOND) // TODO only temporary
+         if(e.getPlayer().getItemInHand().getType() == Material.getMaterial(MobShrinker.item))
          {
-            // pack an animal into special spawner egg
-            if(MobShrinker.isActive)
+            if(e.getPlayer().getInventory().containsAtLeast(new ItemStack(Material.getMaterial(MobShrinker.item)), MobShrinker.amount))
             {
-               if(e.getPlayer().isOp() || e.getPlayer().hasPermission("mobshrinker.use"))
+               // pack an animal into special spawner egg
+               if(MobShrinker.isActive)
                {
-                  if(MobShrinker.allowedEntites.contains(e.getRightClicked().getType().toString()))
+                  if(e.getPlayer().isOp() || e.getPlayer().hasPermission("mobshrinker.use"))
                   {
-                     LivingEntity ent = (LivingEntity)e.getRightClicked();
-
-                     if(ent instanceof Tameable) // if tameable animal, check owner before packing into egg
+                     if(MobShrinker.allowedEntites.contains(e.getRightClicked().getType().toString()))
                      {
-                        Tameable tameableEnt = (Tameable)ent;
+                        LivingEntity ent = (LivingEntity)e.getRightClicked();
 
-                        if(tameableEnt.isTamed())
-                        {                           
-                           if(!e.getPlayer().getName().equals(tameableEnt.getOwner().getName()))
+                        if(ent instanceof Tameable) // if tameable animal, check owner before packing into egg
+                        {
+                           Tameable tameableEnt = (Tameable)ent;
+
+                           if(tameableEnt.isTamed())
                            {                           
-                              e.getPlayer().sendMessage(ChatColor.RED + "Dieses Tier gehoert " + ChatColor.WHITE + tameableEnt.getOwner().getName() + ChatColor.RED + "!");
+                              if(!e.getPlayer().getName().equals(tameableEnt.getOwner().getName()))
+                              {                           
+                                 e.getPlayer().sendMessage(ChatColor.RED + "Dieses Tier gehoert " + ChatColor.WHITE + tameableEnt.getOwner().getName() + ChatColor.RED + "!");
+                                 return;
+                              }
+                           }
+                           else
+                           {
+                              e.getPlayer().sendMessage(ChatColor.RED + "Wilde Tiere koennen nicht umgewandelt werden!");
                               return;
                            }
                         }
-                        else
-                        {
-                           e.getPlayer().sendMessage(ChatColor.RED + "Wilde Tiere koennen nicht umgewandelt werden!");
-                           return;
-                        }
-                     }
 
-                     packLivingEntityToEgg(ent, e.getPlayer());
+                        packLivingEntityToEgg(ent, e.getPlayer());
+                     }
+                     else
+                     {
+                        e.getPlayer().sendMessage(ChatColor.RED + "Dieser Mob-Typ kann nicht umgewandelt werden!");
+                     }          
                   }
-                  else
-                  {
-                     e.getPlayer().sendMessage(ChatColor.RED + "Dieser Mob-Typ kann nicht umgewandelt werden!");
-                  }          
+               }
+               else
+               {
+                  e.getPlayer().sendMessage(MobShrinker.logPrefix + " ist momentan " + ChatColor.RED + " DEAKTIVIERT.");
                }
             }
             else
             {
-               e.getPlayer().sendMessage(MobShrinker.logPrefix + " ist momentan " + ChatColor.RED + " DEAKTIVIERT.");  
+               e.getPlayer().sendMessage(ChatColor.RED + " Du hast nicht die benoetigten " + ChatColor.WHITE + MobShrinker.amount + "x " + MobShrinker.item + ChatColor.RED + "!");
             }
          }
       }
@@ -202,10 +209,10 @@ public class MSEntityListener implements Listener
                            // find place to spawn wolf
                            Wolf wolf = (Wolf)e.getPlayer().getWorld().spawnEntity(e.getClickedBlock().getRelative(BlockFace.UP).getLocation(), EntityType.WOLF);
                            // TODO check surroundings! And search suiting position nearby. Prevent spawning it in a wall!
-                           
+
                            // set wolfs attributes                          
                            wolf.setOwner(e.getPlayer()); // will tame the wolf automaticly            
-                                                     
+
                            if(null != customName)
                            {
                               wolf.setCustomName(customName);                              
@@ -216,7 +223,7 @@ public class MSEntityListener implements Listener
                            }
 
                            if(MobShrinker.debug){e.getPlayer().sendMessage(wolf.getType().getName() + " - " + customName + " - Owner: " + wolf.getOwner().getName() + " - isTamed: " + wolf.isTamed());}
-                           
+
                            e.setCancelled(true); // cancel event to prevent spawning a creature out of the egg.                           
                         }
                      }
@@ -241,7 +248,7 @@ public class MSEntityListener implements Listener
                            // set cats attributes                          
                            cat.setOwner(e.getPlayer()); // will tame the cat automaticly
                            cat.setCatType(Type.valueOf(type[1]));
-                           
+
                            if(null != customName)
                            {
                               cat.setCustomName(customName);                              
@@ -252,7 +259,7 @@ public class MSEntityListener implements Listener
                            }
 
                            if(MobShrinker.debug){e.getPlayer().sendMessage(cat.getType().getName() + " - " + customName + " - Owner: " + cat.getOwner().getName() + " - isTamed: " + cat.isTamed());}
-                           
+
                            e.setCancelled(true); // cancel event to prevent spawning a creature out of the egg.
                         }
                      }
@@ -295,6 +302,7 @@ public class MSEntityListener implements Listener
          {
             player.updateInventory();
             ent.remove();
+            // FIXME deprecated stuff fixen!
             player.sendMessage(ChatColor.GREEN + "Dieses " + ChatColor.WHITE + ent.getType().getName() + ChatColor.GREEN + " wurde in ein Spanwer-Ei verwandelt!");
          }
       }

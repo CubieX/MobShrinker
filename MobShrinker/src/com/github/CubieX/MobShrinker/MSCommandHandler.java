@@ -45,13 +45,14 @@ public class MSCommandHandler implements CommandExecutor
             {
                if(sender.isOp() || sender.hasPermission("mobshrinker.admin"))
                {                        
-                  cHandler.reloadConfig(sender);
-                  return true;
+                  cHandler.reloadConfig(sender);                  
                }
                else
                {
                   sender.sendMessage(ChatColor.RED + "You do not have sufficient permission to reload " + plugin.getDescription().getName() + "!");
                }
+               
+               return true;
             }
 
             if (args[0].equalsIgnoreCase("activate"))
@@ -72,6 +73,7 @@ public class MSCommandHandler implements CommandExecutor
                {
                   sender.sendMessage(ChatColor.RED + "Du hast keine Berechtigung um " + MobShrinker.logPrefix + "zu aktivieren!");
                }
+               
                return true;
             }
 
@@ -93,6 +95,7 @@ public class MSCommandHandler implements CommandExecutor
                {
                   sender.sendMessage(ChatColor.RED + "Du hast keine Berechtigung um " + MobShrinker.logPrefix + "zu deaktivieren!");
                }
+               
                return true;
             }        
 

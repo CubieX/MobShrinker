@@ -4,3 +4,8 @@ config_version: 1
 language: de
 # Enable debug output
 debug: false
+# item to pay for a special spawner egg (must be valid Bukkit item)
+item: DIAMOND
+# amount of specified item to charge the player when shrinking
+# an entity to an egg (1-64)
+amount: 1
