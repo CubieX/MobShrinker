@@ -144,13 +144,13 @@ public class MobShrinker extends JavaPlugin
 
    private void populateAllowedEntitesList()
    {
-      allowedEntites.add("CHICKEN");
-      allowedEntites.add("COW");
+      //allowedEntites.add("CHICKEN");
+      //allowedEntites.add("COW");
       allowedEntites.add("HORSE");        // only tamed ones
-      allowedEntites.add("MUSHROOM_COW");
+      //allowedEntites.add("MUSHROOM_COW");
       allowedEntites.add("OCELOT");       // only tamed ones (= cats)
-      allowedEntites.add("PIG");
-      allowedEntites.add("SHEEP");
+      //allowedEntites.add("PIG");
+      //allowedEntites.add("SHEEP");
       allowedEntites.add("WOLF");         // only tamed ones
    }
 
@@ -206,13 +206,13 @@ public class MobShrinker extends JavaPlugin
 
             if(null != armor)
             {
-               armorType = mount.getInventory().getArmor().getTypeId();
+               armorType = mount.getInventory().getArmor().getTypeId(); //FIXME deprecated -> ersetzen
             }
 
             double speed = getHorseSpeed(mount);
 
             // create spawner egg which will spawn a cat with all necessary attributes
-            spawnerEgg = new ItemStack(Material.MONSTER_EGG, 1, (short)mount.getType().getTypeId()); 
+            spawnerEgg = new ItemStack(Material.MONSTER_EGG, 1, (short)mount.getType().getTypeId()); //FIXME deprecated -> ersetzen
             im = spawnerEgg.getItemMeta();
             name = variant.name();
             im.setDisplayName(name);
@@ -246,7 +246,7 @@ public class MobShrinker extends JavaPlugin
             customName = wolf.getCustomName(); // may be null (must be set by using a NameTag)
 
             // create spawner egg which will spawn a wolf with all necessary attributes
-            spawnerEgg = new ItemStack(Material.MONSTER_EGG, 1, (short)wolf.getType().getTypeId()); 
+            spawnerEgg = new ItemStack(Material.MONSTER_EGG, 1, (short)wolf.getType().getTypeId()); //FIXME deprecated -> ersetzen
             im = spawnerEgg.getItemMeta();
             name = "Wolf";
             im.setDisplayName(name);
@@ -276,7 +276,7 @@ public class MobShrinker extends JavaPlugin
             customName = cat.getCustomName(); // may be null (must be set by using a NameTag)
 
             // create spawner egg which will spawn a cat with all necessary attributes
-            spawnerEgg = new ItemStack(Material.MONSTER_EGG, 1, (short)cat.getType().getTypeId()); 
+            spawnerEgg = new ItemStack(Material.MONSTER_EGG, 1, (short)cat.getType().getTypeId()); //FIXME deprecated -> ersetzen
             im = spawnerEgg.getItemMeta();
             name = "Cat";
             im.setDisplayName(name);
@@ -298,7 +298,7 @@ public class MobShrinker extends JavaPlugin
 
             if(MobShrinker.debug){player.sendMessage(type.name() + " - " + customName);}
             break;
-         default:
+         default: //FIXME deprecated -> ersetzen
             spawnerEgg = new ItemStack(Material.MONSTER_EGG, 1, (short)livEnt.getType().getTypeId()); // pack animal into egg without storing special attributes
          }
       }

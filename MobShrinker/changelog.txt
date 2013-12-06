@@ -1,5 +1,13 @@
 Changelog for MobShrinker by CubieX
 -----------------------------------
+V0.2.4
+- added removal of charged item defined in config
+- spawner eggs now get removed properly upon spawn of pet
+- some structural adjustments
+
+V0.2.3
+- fixed permissions and removed shrink command in plugin.yml
+
 V0.2.2
 - minor fixes in command handler structure
 - added config nodes for item and amount
