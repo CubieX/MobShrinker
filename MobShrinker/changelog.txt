@@ -1,6 +1,10 @@
 Changelog for MobShrinker by CubieX
 -----------------------------------
-V0.2.4
+
+V.0.2.5
+- updated to 1.7.x craftbukkit
+
+V.0.2.4
 - added removal of charged item defined in config
 - spawner eggs now get removed properly upon spawn of pet
 - some structural adjustments
